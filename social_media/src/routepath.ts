@@ -1,4 +1,6 @@
 const routepath = {
-    home:'/'
-}
-export default routepath
+  home: "/",
+  login: "/login",
+  register: "/register",
+};
+export default routepath;
