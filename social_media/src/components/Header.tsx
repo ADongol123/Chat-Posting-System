@@ -1,7 +1,12 @@
 import React from 'react'
 import { Avatar, IconButton, Input, InputGroup, InputLeftElement, Stack, Text } from '@chakra-ui/react';
 import { AiOutlineSearch, AiOutlineBell } from "react-icons/ai"
+import { auth } from '../firebase';
 const Header = () => {
+    const signoutHandler = () => {
+        auth.signOut()
+        console.log('user signed out')
+    }
     return (
         <Stack direction="row" p="2" borderBottom="1px solid lightgray" className='sticky top-0 bg-white z-1000'>
             <Stack p="2" flex="1">
@@ -25,7 +30,7 @@ const Header = () => {
                     <Text textAlign="center" fontSize="xx-small" color="white">3</Text>
                 </Stack>
             </Stack>
-            <Stack direction="row" alignItems="center">
+            <Stack direction="row" alignItems="center" className='cursor-pointer' onClick={signoutHandler}>
                 <Avatar size='sm' name='Ryan Florence' src='https://bit.ly/ryan-florence' />
                 <Text>Sam</Text>
             </Stack>
