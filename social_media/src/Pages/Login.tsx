@@ -3,38 +3,70 @@ import { FcGoogle } from 'react-icons/fc';
 import { BiRightArrowAlt } from "react-icons/bi"
 import { Link } from 'react-router-dom';
 import { useState } from "react"
-import { useDispatch } from 'react-redux';
-import { login } from '../features/User/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUserloggedIn, setUserLogin } from '../features/User/userSlice';
 import firebase from "firebase"
-import { auth } from '../firebase';
+import { auth, provider } from '../firebase';
+import { useEffect } from 'react'
 const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const dispatch = useDispatch();
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    dispatch(login({
-      email: email,
-      password: password,
-      loggedIn: true
-    }))
     auth.signInWithEmailAndPassword(email, password)
-      .then((user) => {
-        // Signed in 
-        console.log("user")
-        // ...
+      .then((result: any) => {
+        const user = result.user;
+        dispatch(
+          setUserLogin({
+            name: user.displayName,
+            email: user.email,
+            photo: user.photoURL,
+            loggedIn: true
+          })
+        );
       })
       .catch((error) => {
         console.log("error")
-        // ..
       });
   }
+  const signin = () => {
+    auth.signInWithPopup(provider).then((result: any) => {
+      const user = result.user;
+      dispatch(
+        setUserLogin({
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL,
+          loggedIn: true
+        })
+      );
+    });
+  }
+  useEffect(() => {
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        dispatch(
+          setUserLogin({
+            name: user.displayName,
+            email: user.email,
+            photo: user.photoURL,
+            loggedIn: true
+          })
+        );
+      }
+    });
+  }, []);
   return (
-    <div className='flex flex-col justify-center items-center h-screen bg-[#0e8afd]'>
+
+    <div className='flex flex-col justify-center items-center h-screen bg-[#0e8afd]' >
       <div className='flex flex-col items-center bg-white p-32 rounded-md gap-5'>
         <Text className='font-bold text-3xl'>Login</Text>
         <div className='flex flex-col items-center'>
-          <div className='border-2 border-gray-300 flex items-center pl-5 pr-5 pt-1 pb-1 gap-2 cursor-pointer'>
+          <div
+            className='border-2 border-gray-300 flex items-center pl-5 pr-5 pt-1 pb-1 gap-2 cursor-pointer'
+            onClick={signin}
+          >
             <FcGoogle />
             <Text className='font-semibold text-sm'>Sign in with Google</Text>
           </div>
@@ -62,7 +94,7 @@ const Login = () => {
           </div>
         </Link>
       </div>
-    </div>
+    </div >
   )
 }
 

@@ -1,12 +1,17 @@
 import React from 'react'
-import { Avatar, IconButton, Input, InputGroup, InputLeftElement, Stack, Text } from '@chakra-ui/react';
+import { Avatar, IconButton, Input, InputGroup, InputLeftElement, Stack, Text, AvatarBadge } from '@chakra-ui/react';
 import { AiOutlineSearch, AiOutlineBell } from "react-icons/ai"
 import { auth } from '../firebase';
+import { useSelector } from 'react-redux';
+import { selectUserPhoto, selectUserName, selectUserloggedIn } from './../features/User/userSlice';
 const Header = () => {
     const signoutHandler = () => {
         auth.signOut()
         console.log('user signed out')
     }
+    const userPhoto = useSelector(selectUserPhoto)
+    const userName = useSelector(selectUserName)
+    const userLog = useSelector(selectUserloggedIn)
     return (
         <Stack direction="row" p="2" borderBottom="1px solid lightgray" className='sticky top-0 bg-white z-1000'>
             <Stack p="2" flex="1">
@@ -31,8 +36,10 @@ const Header = () => {
                 </Stack>
             </Stack>
             <Stack direction="row" alignItems="center" className='cursor-pointer' onClick={signoutHandler}>
-                <Avatar size='sm' name='Ryan Florence' src='https://bit.ly/ryan-florence' />
-                <Text>Sam</Text>
+                <Avatar size="sm" src={userPhoto}>
+                    <AvatarBadge boxSize='1.25em' bg='green.500' />
+                </Avatar>
+                <Text>{userName}</Text>
             </Stack>
         </Stack >
     )
