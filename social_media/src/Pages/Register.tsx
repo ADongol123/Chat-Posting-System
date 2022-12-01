@@ -1,4 +1,4 @@
-import { Button, Input, InputGroup, InputRightElement, Text } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, Text } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { FcGoogle } from "react-icons/fc"
 import { BiLeftArrowAlt } from "react-icons/bi"
@@ -16,7 +16,9 @@ const Register = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [repassword, setRePassword] = useState("")
+  const [file, setFile] = useState("")
   const [values, setValues] = useState<UserData[]>([])
+  const UserData = values?.map((datas) => datas.id)
   const navigate = useNavigate()
   const toast = useToast()
   const [show, setShow] = useState(false)
@@ -30,41 +32,51 @@ const Register = () => {
       )
     );
   }, []);
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
-    values.map((data) => data?.data?.email === email ? toast({
-      title: 'Email Error',
-      description: "The Email is already registered",
-      status: 'error',
-      duration: 9000,
-      isClosable: true,
-    }) : db.collection("users").add({
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      name: username,
-      email: email,
-      password: password,
-      repassword: repassword
-    }))
-    toast({
-      title: 'User Registered',
-      description: "You have been registered",
-      status: 'success',
-      duration: 9000,
-      isClosable: true,
-    })
-    auth.createUserWithEmailAndPassword(email, password).then(user => {
-      console.log("success")
-    }).catch((error) => {
-      console.log("error")
-    })
-
-    navigate(`/login`)
-    setUsername(" ")
-    setEmail(" ")
-    setPassword(" ")
-    setRePassword(" ")
+    try {
+      var response = await auth.createUserWithEmailAndPassword(email, password)
+      console.log(response)
+      values.map((data) => data?.data?.email === email ? toast({
+        title: 'Email Error',
+        description: "The Email is already registered",
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      }) : db.collection("users").add({
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        name: username,
+        email: email,
+        password: password,
+        repassword: repassword
+      }))
+      toast({
+        title: 'User Registered',
+        description: "You have been registered",
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      })
+      auth.createUserWithEmailAndPassword(email, password).then(user => {
+        // db.collection("userChats").doc(user?.uid).set({})
+        console.log("successfull")
+      }).catch((error) => {
+        console.log(error)
+      })
+      navigate(`/login`)
+      setUsername(" ")
+      setEmail(" ")
+      setPassword(" ")
+      setRePassword(" ")
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
 
+  const postDetails = (e: any | null) => {
+
+  }
   return (
     <div className='flex flex-col justify-center items-center h-screen bg-[#0e8afd]'>
       <div className='flex flex-col items-center bg-white p-32 rounded-md gap-5'>
@@ -118,6 +130,15 @@ const Register = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
+            <FormControl>
+              <FormLabel>Upload your Picture</FormLabel>
+              <Input
+                type="file"
+                p={1.5}
+                accept="image/*"
+                onChange={(e) => e.target.files && e.target.files?.length > 0 && postDetails(e.target.files[0])}
+              />
+            </FormControl>
             <Button type="submit">Submit</Button>
           </form>
         </div>

@@ -7,7 +7,6 @@ import { selectUserPhoto, selectUserName, selectUserloggedIn } from './../featur
 const Header = () => {
     const signoutHandler = () => {
         auth.signOut()
-        console.log('user signed out')
     }
     const userPhoto = useSelector(selectUserPhoto)
     const userName = useSelector(selectUserName)

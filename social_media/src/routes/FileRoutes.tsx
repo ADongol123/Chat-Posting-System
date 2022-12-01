@@ -9,8 +9,6 @@ import routepath from "../routepath"
 const FileRoutes = () => {
     const userEmail = useSelector(selectUserEmail)
     const userLoggedIn = useSelector(selectUserloggedIn)
-    console.log(userLoggedIn)
-    console.log(userEmail)
     return (
         <Routes>
             <Route path={routepath.home} element={<HomeChat />} />
