@@ -1,5 +1,5 @@
 const routepath = {
-  home: "/",
+  home: "/chat",
   login: "/login",
   register: "/register",
 };

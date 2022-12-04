@@ -4,15 +4,17 @@ import { FcGoogle } from "react-icons/fc"
 import { BiLeftArrowAlt } from "react-icons/bi"
 import { Link } from 'react-router-dom'
 import db, { auth } from './../firebase';
-import firebase from "firebase";
+// import firebase from "firebase";
+import axios from "axios"
 import { useToast } from '@chakra-ui/react'
 import { useNavigate } from "react-router-dom";
+import { json } from 'stream/consumers'
 interface UserData {
   id: any,
   data: any
 }
 const Register = () => {
-  const [username, setUsername] = useState("")
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [repassword, setRePassword] = useState("")
@@ -21,53 +23,94 @@ const Register = () => {
   const UserData = values?.map((datas) => datas.id)
   const navigate = useNavigate()
   const toast = useToast()
+  const [loading, setLoading] = useState(false)
   const [show, setShow] = useState(false)
   const [shows, setShows] = useState(false)
   const handleClick = () => setShow(!show)
   const handleClicks = () => setShows(!shows)
-  useEffect(() => {
-    db.collection("users").onSnapshot((snapshot) =>
-      setValues(
-        snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }))
-      )
-    );
-  }, []);
+  // useEffect(() => {
+  //   db.collection("users").onSnapshot((snapshot) =>
+  //     setValues(
+  //       snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }))
+  //     )
+  //   );
+  // }, []);
   const handleSubmit = async (e: any) => {
     e.preventDefault()
-    try {
-      var response = await auth.createUserWithEmailAndPassword(email, password)
-      console.log(response)
-      values.map((data) => data?.data?.email === email ? toast({
-        title: 'Email Error',
-        description: "The Email is already registered",
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
-      }) : db.collection("users").add({
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-        name: username,
-        email: email,
-        password: password,
-        repassword: repassword
-      }))
+    // try {
+    //   var response = await auth.createUserWithEmailAndPassword(email, password)
+    //   console.log(response)
+    //   values.map((data) => data?.data?.email === email ? toast({
+    //     title: 'Email Error',
+    //     description: "The Email is already registered",
+    //     status: 'error',
+    //     duration: 9000,
+    //     isClosable: true,
+    //   }) : db.collection("users").add({
+    //     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    //     name: username,
+    //     email: email,
+    //     password: password,
+    //     repassword: repassword
+    //   }))
+    //   toast({
+    //     title: 'User Registered',
+    //     description: "You have been registered",
+    //     status: 'success',
+    //     duration: 9000,
+    //     isClosable: true,
+    //   })
+    //   auth.createUserWithEmailAndPassword(email, password).then(user => {
+    //     // db.collection("userChats").doc(user?.uid).set({})
+    //     console.log("successfull")
+    //   }).catch((error) => {
+    //     console.log(error)
+    //   })
+    //   navigate(`/login`)
+    //   setUsername(" ")
+    //   setEmail(" ")
+    //   setPassword(" ")
+    //   setRePassword(" ")
+    // }
+    // catch (err) {
+    //   console.log(err)
+    // }
+    if (!name || !email || !password || !repassword) {
       toast({
-        title: 'User Registered',
-        description: "You have been registered",
-        status: 'success',
-        duration: 9000,
+        title: "Please Fill all the Fields",
+        status: "warning",
+        duration: 5000,
         isClosable: true,
+        position: "bottom"
       })
-      auth.createUserWithEmailAndPassword(email, password).then(user => {
-        // db.collection("userChats").doc(user?.uid).set({})
-        console.log("successfull")
-      }).catch((error) => {
-        console.log(error)
+      setLoading(false);
+      return;
+    }
+    if (password !== repassword) {
+      toast({
+        title: "Password does not match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom"
       })
-      navigate(`/login`)
-      setUsername(" ")
-      setEmail(" ")
-      setPassword(" ")
-      setRePassword(" ")
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json"
+        }
+      }
+      const { data } = await axios.post("api/user", { name, email, password }, config);
+      toast({
+        title: "Registration Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom"
+      });
+      localStorage.setItem('userInfo', JSON.stringify(data))
     }
     catch (err) {
       console.log(err)
@@ -87,14 +130,14 @@ const Register = () => {
             <Text className='font-semibold text-sm'>Sign in with Google</Text>
           </div>
         </div>
-        <text>Or</text>
+        <Text>Or</Text>
         <div className=' p-5'>
           <form className='flex flex-col gap-5 ' onSubmit={(e) => handleSubmit(e)} >
             <Input
               variant='outline'
               type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder="Username" />
             <Input
               variant='outline'
@@ -130,7 +173,7 @@ const Register = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
-            <FormControl>
+            {/* <FormControl>
               <FormLabel>Upload your Picture</FormLabel>
               <Input
                 type="file"
@@ -138,8 +181,10 @@ const Register = () => {
                 accept="image/*"
                 onChange={(e) => e.target.files && e.target.files?.length > 0 && postDetails(e.target.files[0])}
               />
-            </FormControl>
-            <Button type="submit">Submit</Button>
+            </FormControl> */}
+            <Button
+              // isLoading={true}
+              type="submit">Submit</Button>
           </form>
         </div>
         <Link to="/login">

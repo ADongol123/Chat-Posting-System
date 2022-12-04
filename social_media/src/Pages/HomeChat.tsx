@@ -25,7 +25,7 @@ const HomeChat = () => {
     }, [])
     return (
         <div>
-            {user ? <div><Header />
+            <div><Header />
                 <div className=' flex h-screen fixed w-screen'>
                     <div style={{ flex: '0.2' }}>
                         <Sidebar />
@@ -36,7 +36,7 @@ const HomeChat = () => {
                     <div style={{ flex: '0.2' }}>
                         <PersonalInfo />
                     </div>
-                </div></div> : <Login />}
+                </div></div>
 
         </div>
     )

@@ -1,62 +1,54 @@
-import { Button, Input, Text } from '@chakra-ui/react'
+import { Button, Input, Text, useToast } from '@chakra-ui/react'
 import { FcGoogle } from 'react-icons/fc';
 import { BiRightArrowAlt } from "react-icons/bi"
 import { Link } from 'react-router-dom';
 import { useState } from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUserloggedIn, setUserLogin } from '../features/User/userSlice';
-import firebase from "firebase"
-import { auth, provider } from '../firebase';
-import { useEffect } from 'react'
+import { useNavigate } from "react-router-dom"
+import axios from 'axios';
 const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const toast = useToast()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    auth.signInWithEmailAndPassword(email, password)
-      .then((result: any) => {
-        const user = result.user;
-        dispatch(
-          setUserLogin({
-            name: user.displayName,
-            email: user.email,
-            photo: user.photoURL,
-            loggedIn: true
-          })
-        );
+    if (!email || !password) {
+      toast({
+        title: "Please Fill all the Fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom"
       })
-      .catch((error) => {
-        console.log("error")
-      });
-  }
-  const signin = () => {
-    auth.signInWithPopup(provider).then((result: any) => {
-      const user = result.user;
-      dispatch(
-        setUserLogin({
-          name: user.displayName,
-          email: user.email,
-          photo: user.photoURL,
-          loggedIn: true
-        })
-      );
-    });
-  }
-  useEffect(() => {
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        dispatch(
-          setUserLogin({
-            name: user.displayName,
-            email: user.email,
-            photo: user.photoURL,
-            loggedIn: true
-          })
-        );
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json"
+        }
       }
-    });
-  }, []);
+      const { data } = await axios.post("api/user/login", { email, password }, config);
+      toast({
+        title: "Login Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom"
+      });
+      localStorage.setItem('userInfo', JSON.stringify(data))
+      navigate("/chat")
+    }
+    catch (err) {
+      console.log(err)
+    }
+
+  }
+
+
   return (
 
     <div className='flex flex-col justify-center items-center h-screen bg-[#0e8afd]' >
@@ -65,7 +57,7 @@ const Login = () => {
         <div className='flex flex-col items-center'>
           <div
             className='border-2 border-gray-300 flex items-center pl-5 pr-5 pt-1 pb-1 gap-2 cursor-pointer'
-            onClick={signin}
+
           >
             <FcGoogle />
             <Text className='font-semibold text-sm'>Sign in with Google</Text>
