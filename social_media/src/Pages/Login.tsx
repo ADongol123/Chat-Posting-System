@@ -2,17 +2,19 @@ import { Button, Input, Text, useToast } from '@chakra-ui/react'
 import { FcGoogle } from 'react-icons/fc';
 import { BiRightArrowAlt } from "react-icons/bi"
 import { Link } from 'react-router-dom';
-import { useState } from "react"
+import { useState ,useEffect } from "react"
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUserloggedIn, setUserLogin } from '../features/User/userSlice';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
+import { selectUserName, setUserLogin } from '../features/User/userSlice';
 const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [loading, setLoading] = useState(false)
   const toast = useToast()
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userName = useSelector(selectUserName);
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!email || !password) {
@@ -39,6 +41,7 @@ const Login = () => {
         isClosable: true,
         position: "bottom"
       });
+      setLoading(true)
       localStorage.setItem('userInfo', JSON.stringify(data))
       navigate("/chat")
     }
@@ -48,10 +51,29 @@ const Login = () => {
 
   }
 
+  useEffect(() => {
+    const userInfo = window.localStorage.getItem("userInfo");
+    const parsedUser = userInfo && JSON.parse(userInfo)
+    if (Object.keys(parsedUser).length > 0) { 
+    console.log(parsedUser,"data")
+        dispatch(
+            setUserLogin({
+                name: parsedUser.name,
+                email: parsedUser.email,
+                photo: parsedUser.pic,
+                loggedIn: true
+            })
+        )
+
+    }
+    else{
+        navigate("/")
+    };
+}, [])
 
   return (
-
-    <div className='flex flex-col justify-center items-center h-screen bg-[#0e8afd]' >
+<>
+{!userName ? <div className='flex flex-col justify-center items-center h-screen bg-[#0e8afd]' >
       <div className='flex flex-col items-center bg-white p-32 rounded-md gap-5'>
         <Text className='font-bold text-3xl'>Login</Text>
         <div className='flex flex-col items-center'>
@@ -86,7 +108,10 @@ const Login = () => {
           </div>
         </Link>
       </div>
-    </div >
+    </div > : navigate("/chat") }
+ 
+   
+    </>
   )
 }
 

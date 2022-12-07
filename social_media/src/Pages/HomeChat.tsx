@@ -1,38 +1,44 @@
-import React from 'react'
 import { Stack, Text } from '@chakra-ui/react';
 import Sidebar from '../components/Sidebar';
 import PersonalInfo from '../components/PersonalInfo';
 import Header from '../components/Header';
 import ChatRoom from '../components/ChatRoom';
 import { useEffect, useState } from "react"
-import { auth } from '../firebase';
-import Login from './Login';
-import { useDispatch } from 'react-redux';
-import { setUserLogin } from '../features/User/userSlice';
+import { useDispatch, useSelector} from 'react-redux';
+import { selectUserEmail, selectUserloggedIn, selectUserName, selectUserPhoto, setUserLogin } from '../features/User/userSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 const HomeChat = () => {
-    const [user, setUser] = useState<any>({})
-    console.log(user, "data")
+    const navigate = useNavigate();
+    const userName = useSelector(selectUserName);
+    const userEmail = useSelector(selectUserEmail);
+    const userPhoto = useSelector(selectUserPhoto);
+    const userStatus = useSelector(selectUserloggedIn);
     const dispatch = useDispatch();
     useEffect(() => {
         const userInfo = window.localStorage.getItem("userInfo");
-        if (userInfo) { 
-            setUser(JSON.parse(userInfo))
+        const parsedUser = userInfo && JSON.parse(userInfo)
+        if (Object.keys(parsedUser).length > 0) { 
+        console.log(parsedUser,"data")
             dispatch(
                 setUserLogin({
-                    name: user.name,
-                    email: user.email,
-                    photo: user.pic,
+                    name: parsedUser.name,
+                    email: parsedUser.email,
+                    photo: parsedUser.pic,
                     loggedIn: true
                 })
             )
 
+        }
+        else{
+            navigate("/")
         };
-    }, [localStorage])
+    }, [])
     return (
-        <div>
-            <div><Header />
+        <>
+       <div>
+                <Header name={userName} email={userEmail} photo={userPhoto} status={userStatus} />
                 <div className=' flex h-screen fixed w-screen'>
                     <div style={{ flex: '0.2' }}>
                         <Sidebar />
@@ -43,9 +49,10 @@ const HomeChat = () => {
                     <div style={{ flex: '0.2' }}>
                         <PersonalInfo />
                     </div>
-                </div></div>
-
-        </div>
+                </div>
+            </div> 
+            
+            </>
     )
 }
 
