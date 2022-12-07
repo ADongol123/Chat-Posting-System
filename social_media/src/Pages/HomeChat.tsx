@@ -7,22 +7,29 @@ import ChatRoom from '../components/ChatRoom';
 import { useEffect, useState } from "react"
 import { auth } from '../firebase';
 import Login from './Login';
+import { useDispatch } from 'react-redux';
+import { setUserLogin } from '../features/User/userSlice';
+
+
 const HomeChat = () => {
-    const [user, setUser] = useState<any>(null)
+    const [user, setUser] = useState<any>({})
+    console.log(user, "data")
+    const dispatch = useDispatch();
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(user => {
-            const userData = {
-                uid: user?.uid,
-                email: user?.email
-            }
-            if (user) {
-                setUser(userData)
-            } else {
-                setUser(null)
-            }
-        })
-        return unsubscribe
-    }, [])
+        const userInfo = window.localStorage.getItem("userInfo");
+        if (userInfo) { 
+            setUser(JSON.parse(userInfo))
+            dispatch(
+                setUserLogin({
+                    name: user.name,
+                    email: user.email,
+                    photo: user.pic,
+                    loggedIn: true
+                })
+            )
+
+        };
+    }, [localStorage])
     return (
         <div>
             <div><Header />

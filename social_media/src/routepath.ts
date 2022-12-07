@@ -1,6 +1,6 @@
 const routepath = {
   home: "/chat",
-  login: "/login",
+  login: "/",
   register: "/register",
 };
 export default routepath;
