@@ -15,6 +15,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userName = useSelector(selectUserName);
+  console.log(userName,"user")
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!email || !password) {
@@ -54,7 +55,7 @@ const Login = () => {
   useEffect(() => {
     const userInfo = window.localStorage.getItem("userInfo");
     const parsedUser = userInfo && JSON.parse(userInfo)
-    if (Object.keys(parsedUser).length > 0) { 
+    if (parsedUser && Object.keys(parsedUser).length > 0) { 
     console.log(parsedUser,"data")
         dispatch(
             setUserLogin({
@@ -69,7 +70,7 @@ const Login = () => {
     else{
         navigate("/")
     };
-}, [])
+}, [localStorage])
 
   return (
 <>

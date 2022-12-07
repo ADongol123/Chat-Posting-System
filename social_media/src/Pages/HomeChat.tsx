@@ -19,7 +19,7 @@ const HomeChat = () => {
     useEffect(() => {
         const userInfo = window.localStorage.getItem("userInfo");
         const parsedUser = userInfo && JSON.parse(userInfo)
-        if (Object.keys(parsedUser).length > 0) { 
+        if (parsedUser && Object.keys(parsedUser).length > 0) { 
         console.log(parsedUser,"data")
             dispatch(
                 setUserLogin({
