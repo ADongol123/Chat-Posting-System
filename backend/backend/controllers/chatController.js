@@ -53,12 +53,16 @@ export const fetchChat = asyncHandler(async (req, res) => {
       .populate("latestMessage")
       .sort({ updatedAt: -1 })
       .then(async (results) => {
-        results = await User.populate(isChat, {
+        results = await User.populate(results, {
           path: "latestMessage.sender",
           select: "name pic email",
         });
+        res.status(200).send(results)
       });
-  } catch (error) {}
+  } catch (error) {
+    res.status(400)
+    throw new Error(error.message);
+  }
 });
 
 export const createGroupChat = asyncHandler(async(req,res) =>{

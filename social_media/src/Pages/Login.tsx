@@ -7,15 +7,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import { selectUserName, setUserLogin } from '../features/User/userSlice';
+import { ChatState } from '../Context/ChatProvider';
 const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const toast = useToast()
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const userName = useSelector(selectUserName);
-  console.log(userName,"user")
+  const {
+    setSelectedChat,
+    user,
+    notification,
+    setNotification,
+    chats,
+    setChats,
+  } : any = ChatState();
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!email || !password) {
@@ -52,29 +58,29 @@ const Login = () => {
 
   }
 
-  useEffect(() => {
-    const userInfo = window.localStorage.getItem("userInfo");
-    const parsedUser = userInfo && JSON.parse(userInfo)
-    if (parsedUser && Object.keys(parsedUser).length > 0) { 
-    console.log(parsedUser,"data")
-        dispatch(
-            setUserLogin({
-                name: parsedUser.name,
-                email: parsedUser.email,
-                photo: parsedUser.pic,
-                loggedIn: true
-            })
-        )
+//   useEffect(() => {
+//     const userInfo = window.localStorage.getItem("userInfo");
+//     const parsedUser = userInfo && JSON.parse(userInfo)
+//     if (parsedUser && Object.keys(parsedUser).length > 0) { 
+//     console.log(parsedUser,"data")
+//         dispatch(
+//             setUserLogin({
+//                 name: parsedUser.name,
+//                 email: parsedUser.email,
+//                 photo: parsedUser.pic,
+//                 loggedIn: true
+//             })
+//         )
 
-    }
-    else{
-        navigate("/")
-    };
-}, [localStorage])
+//     }
+//     else{
+//         navigate("/")
+//     };
+// }, [localStorage])
 
   return (
 <>
-{!userName ? <div className='flex flex-col justify-center items-center h-screen bg-[#0e8afd]' >
+{!user ? <div className='flex flex-col justify-center items-center h-screen bg-[#0e8afd]' >
       <div className='flex flex-col items-center bg-white p-32 rounded-md gap-5'>
         <Text className='font-bold text-3xl'>Login</Text>
         <div className='flex flex-col items-center'>
@@ -86,7 +92,7 @@ const Login = () => {
             <Text className='font-semibold text-sm'>Sign in with Google</Text>
           </div>
         </div>
-        <text>Or</text>
+        <Text>Or</Text>
         <div>
           <form className='flex flex-col gap-5' onSubmit={(e) => handleSubmit(e)}>
             <Input
