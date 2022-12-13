@@ -2,8 +2,9 @@ import { Avatar, Box, Text } from "@chakra-ui/react";
 import React from "react";
 
 interface Props {
-  handleFunction: any;
-  user: any;
+  handleFunction?: any;
+  user?: any;
+  admin?: any
 }
 const UserList = ({ handleFunction, user }: Props) => {
   console.log(user, "userInfo");

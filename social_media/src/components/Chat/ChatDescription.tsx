@@ -2,7 +2,13 @@ import React from 'react'
 import { Avatar, Text } from '@chakra-ui/react';
 import { BsThreeDots } from "react-icons/bs"
 
-const ChatDescription = () => {
+
+interface Props {
+  fetchAgain : boolean
+  setFetchAgian : any 
+}
+
+const ChatDescription = ({fetchAgain,setFetchAgian}:Props) => {
   return (
     <div className='fixed top-40 overflow-y-scroll h-4/5 p-2' style={{ width: "60%" }}>
       <div className="flex items-center mb-4">

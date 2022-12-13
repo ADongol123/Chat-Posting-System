@@ -13,9 +13,13 @@ import React, { useState, useEffect } from "react";
 import { getSender } from "../config/ChatLogics";
 import { ChatState } from "../Context/ChatProvider";
 import ChatLoading from "./Chat/ChatLoading";
-import {AiOutlinePlus} from "react-icons/ai"
-import Modal from "../components/modal/modal"
-const Sidebar = () => {
+import { AiOutlinePlus } from "react-icons/ai";
+import Modal from "../components/modal/modal";
+
+interface Props {
+  fetchAgain : boolean
+}
+const Sidebar = ({fetchAgain}:Props) => {
   const [loggedUser, setLoggeduser] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -54,7 +58,7 @@ const Sidebar = () => {
     const secondFetch = firstFetch && JSON.parse(firstFetch);
     setLoggeduser(secondFetch);
     fetchChats();
-  }, []);
+  }, [fetchAgain]);
 
   return (
     <div
@@ -63,22 +67,29 @@ const Sidebar = () => {
     >
       <div className="flex flex-col space-x-2 px-3 py-3 content-center">
         <Text className="font-medium text-base">Favourites</Text>
-        <div className="flex space-x-3my-2 h-10 overflow-hidden">
-          <Avatar size="sm">
-            <AvatarBadge boxSize="1.25em" bg="green.500" />
-          </Avatar>
+        <div className="flex space-x-3 w- my-2 h-10 scrollhost">
+          {chats?.map((data: any) => (
+            <Avatar size="sm" src={data.chatName} key={data._id}>
+              <AvatarBadge boxSize="1.25em" bg="green.500" />
+            </Avatar>
+          ))}
         </div>
       </div>
-      <div className="flex flex-col h-screen ">
+      <div className="flex flex-col h-screen">
         <div className="flex justify-between items-center px-3 py-3">
           <Text className="font-medium text-base space-y-2">My Chat List</Text>
-          <Button rightIcon={<AiOutlinePlus />} colorScheme="blue" variant="outline" onClick={onOpen}>
+          <Button
+            rightIcon={<AiOutlinePlus />}
+            colorScheme="blue"
+            variant="outline"
+            onClick={onOpen}
+          >
             Add Group
           </Button>
         </div>
-        <Modal isOpen={isOpen} onOpen={onOpen} onClose = {onClose}/>
+        <Modal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
         {chats ? (
-          <Stack overflowY="scroll" height="100%" padding="3">
+          <Stack overflowY="scroll" height="70%" padding="3">
             {chats.map((chat: any) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
@@ -113,9 +124,7 @@ const Sidebar = () => {
                           : chat.latestMessage.content}
                       </Text>
                     )} */}
-                    <Text className="font-medium text-sm ">
-                      30Min
-                    </Text>
+                    <Text className="font-medium text-sm ">30Min</Text>
                   </div>
                 </div>
               </Box>

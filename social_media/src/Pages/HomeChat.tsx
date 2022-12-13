@@ -14,6 +14,7 @@ import { ChatState } from "../Context/ChatProvider";
 const HomeChat = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [fetchAgain,setFetchAgain] = useState(false)
   const { user }: any = ChatState();
 
   // useEffect(() => {
@@ -39,10 +40,10 @@ const HomeChat = () => {
         <Header />
         <div className=" flex h-screen fixed w-screen">
           <div style={{ flex: "0.2" }}>
-            <Sidebar />
+            <Sidebar  fetchAgain={fetchAgain} />
           </div>
           <div style={{ flex: "0.6" }}>
-            <ChatRoom />
+            <ChatRoom fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>
           </div>
           <div style={{ flex: "0.2" }}>
             <PersonalInfo />
