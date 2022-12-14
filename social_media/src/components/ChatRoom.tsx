@@ -15,6 +15,10 @@ interface Props {
 const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
   const { user, selectedChat, setSelectedChat }: any = ChatState();
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [message , setMessage] = useState([])
+  const [loading,setLoading] = useState(false)
+  const [newMesage,setNewMessage] = useState<any>()
+
   return (
     <div className="flex flex-col border-r-2 border-gray-200 h-screen ">
       {selectedChat ? (
@@ -58,7 +62,6 @@ const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
             fetchAgain={fetchAgain}
             setFetchAgian={setFetchAgain}
           />
-          <ChatInput />
         </>
       ) : (
         <div

@@ -67,7 +67,7 @@ const Sidebar = ({fetchAgain}:Props) => {
     >
       <div className="flex flex-col space-x-2 px-3 py-3 content-center">
         <Text className="font-medium text-base">Favourites</Text>
-        <div className="flex space-x-3 w- my-2 h-10 scrollhost">
+        <div className="flex space-x-3 my-2 h-10 w-[100%] overflow-x-auto no-scrollbar">
           {chats?.map((data: any) => (
             <Avatar size="sm" src={data.chatName} key={data._id}>
               <AvatarBadge boxSize="1.25em" bg="green.500" />
@@ -89,7 +89,7 @@ const Sidebar = ({fetchAgain}:Props) => {
         </div>
         <Modal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
         {chats ? (
-          <Stack overflowY="scroll" height="70%" padding="3">
+          <div className="flex flex-col no-scrollbar overflow-y-auto h-[70%] p-3 gap-2">
             {chats.map((chat: any) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
@@ -129,7 +129,7 @@ const Sidebar = ({fetchAgain}:Props) => {
                 </div>
               </Box>
             ))}
-          </Stack>
+          </div>
         ) : (
           <ChatLoading />
         )}
