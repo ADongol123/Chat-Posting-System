@@ -52,7 +52,7 @@ const Sidebar = ({fetchAgain}:Props) => {
       console.log(error, "console");
     }
   };
-
+  //this is a git commit
   useEffect(() => {
     const firstFetch = localStorage.getItem("userInfo");
     const secondFetch = firstFetch && JSON.parse(firstFetch);
