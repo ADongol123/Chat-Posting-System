@@ -7,7 +7,6 @@ interface Props {
   admin?: any
 }
 const UserList = ({ handleFunction, user }: Props) => {
-  console.log(user, "userInfo");
   return (
     <Box
       onClick={handleFunction}

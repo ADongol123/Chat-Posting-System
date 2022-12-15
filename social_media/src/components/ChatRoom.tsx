@@ -1,4 +1,4 @@
-import { Avatar, Button, Text, useDisclosure } from "@chakra-ui/react";
+import { Avatar, Button, Spinner, Text, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineSmile } from "react-icons/ai";
@@ -14,10 +14,8 @@ interface Props {
 
 const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
   const { user, selectedChat, setSelectedChat }: any = ChatState();
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [message , setMessage] = useState([])
-  const [loading,setLoading] = useState(false)
-  const [newMesage,setNewMessage] = useState<any>()
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="flex flex-col border-r-2 border-gray-200 h-screen ">
@@ -35,7 +33,9 @@ const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
                     name="Prosper Otemuyiwa"
                     src="https://bit.ly/prosper-baba"
                   />
-                  <Text className="font-medium ">{getSender(user,selectedChat.users)}</Text>
+                  <Text className="font-medium ">
+                    {getSender(user, selectedChat.users)}
+                  </Text>
                 </div>
                 <div>
                   <BsThreeDots className="h-6 w-6 " />
@@ -49,19 +49,34 @@ const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
                     name="Prosper Otemuyiwa"
                     src="https://bit.ly/prosper-baba"
                   />
-                  <Text className="font-medium uppercase">{selectedChat.chatName}</Text>
+                  <Text className="font-medium uppercase">
+                    {selectedChat.chatName}
+                  </Text>
                 </div>
                 <div>
-                  <BsThreeDots className="h-6 w-6 cursor-pointer" onClick={onOpen}/>
-                  <UpdateGroupChatModel onOpen={onOpen} isOpen={isOpen} onClose={onClose} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>
+                  <BsThreeDots
+                    className="h-6 w-6 cursor-pointer"
+                    onClick={onOpen}
+                  />
+                  <UpdateGroupChatModel
+                    onOpen={onOpen}
+                    isOpen={isOpen}
+                    onClose={onClose}
+                    fetchAgain={fetchAgain}
+                    setFetchAgain={setFetchAgain}
+                  />
                 </div>
               </>
             )}
           </div>
-          <ChatDescription
-            fetchAgain={fetchAgain}
-            setFetchAgian={setFetchAgain}
-          />
+
+            <ChatDescription
+              loading={loading}
+              setLoading={setLoading}
+              fetchAgain={fetchAgain}
+              setFetchAgian={setFetchAgain}
+            />
+      
         </>
       ) : (
         <div

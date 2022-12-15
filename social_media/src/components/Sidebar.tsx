@@ -39,7 +39,6 @@ const Sidebar = ({fetchAgain}:Props) => {
         },
       };
       const { data } = await axios.get("/api/chat", config);
-      console.log(data, "setData");
       setChats(data);
     } catch (error) {
       toast({
@@ -49,10 +48,9 @@ const Sidebar = ({fetchAgain}:Props) => {
         isClosable: true,
         position: "bottom-left",
       });
-      console.log(error, "console");
     }
   };
-  //this is a git commit
+
   useEffect(() => {
     const firstFetch = localStorage.getItem("userInfo");
     const secondFetch = firstFetch && JSON.parse(firstFetch);
@@ -116,14 +114,14 @@ const Sidebar = ({fetchAgain}:Props) => {
                         ? getSender(loggedUser, chat.users)
                         : chat.chatName}
                     </Text>
-                    {/* {chat.latestMessage && (
+                    {chat.latestMessage && (
                       <Text fontSize="xs">
                         <b>{chat.latestMessage.sender.name} : </b>
                         {chat.latestMessage.content.length > 50
                           ? chat.latestMessage.content.substring(0, 51) + "..."
                           : chat.latestMessage.content}
                       </Text>
-                    )} */}
+                    )}
                     <Text className="font-medium text-sm ">30Min</Text>
                   </div>
                 </div>

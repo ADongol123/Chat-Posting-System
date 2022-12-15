@@ -97,7 +97,6 @@ const Header = () => {
   };
 
   const accessChat = async (userId: string) => {
-    console.log(userId);
     try {
       setLoadingChat(true);
       const config = {

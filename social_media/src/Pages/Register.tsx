@@ -28,53 +28,10 @@ const Register = () => {
   const [shows, setShows] = useState(false)
   const handleClick = () => setShow(!show)
   const handleClicks = () => setShows(!shows)
-  // useEffect(() => {
-  //   db.collection("users").onSnapshot((snapshot) =>
-  //     setValues(
-  //       snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }))
-  //     )
-  //   );
-  // }, []);
+
   const handleSubmit = async (e: any) => {
     e.preventDefault()
-    // try {
-    //   var response = await auth.createUserWithEmailAndPassword(email, password)
-    //   console.log(response)
-    //   values.map((data) => data?.data?.email === email ? toast({
-    //     title: 'Email Error',
-    //     description: "The Email is already registered",
-    //     status: 'error',
-    //     duration: 9000,
-    //     isClosable: true,
-    //   }) : db.collection("users").add({
-    //     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    //     name: username,
-    //     email: email,
-    //     password: password,
-    //     repassword: repassword
-    //   }))
-    //   toast({
-    //     title: 'User Registered',
-    //     description: "You have been registered",
-    //     status: 'success',
-    //     duration: 9000,
-    //     isClosable: true,
-    //   })
-    //   auth.createUserWithEmailAndPassword(email, password).then(user => {
-    //     // db.collection("userChats").doc(user?.uid).set({})
-    //     console.log("successfull")
-    //   }).catch((error) => {
-    //     console.log(error)
-    //   })
-    //   navigate(`/login`)
-    //   setUsername(" ")
-    //   setEmail(" ")
-    //   setPassword(" ")
-    //   setRePassword(" ")
-    // }
-    // catch (err) {
-    //   console.log(err)
-    // }
+    
     if (!name || !email || !password || !repassword) {
       toast({
         title: "Please Fill all the Fields",
