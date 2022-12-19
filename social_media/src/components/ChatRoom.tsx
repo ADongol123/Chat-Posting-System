@@ -1,5 +1,13 @@
-import { Avatar, Button, Spinner, Text, useDisclosure } from "@chakra-ui/react";
-import React, { useState } from "react";
+import {
+  Avatar,
+  Box,
+  Button,
+  IconButton,
+  Spinner,
+  Text,
+  useDisclosure,
+} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { AiOutlineSmile } from "react-icons/ai";
 import ChatInput from "./Chat/ChatInput";
@@ -7,23 +15,49 @@ import ChatDescription from "./Chat/ChatDescription";
 import { ChatState } from "../Context/ChatProvider";
 import { getSender } from "../config/ChatLogics";
 import UpdateGroupChatModel from "./Chat/UpdateGroupChatModel";
+import {AiOutlineArrowLeft} from "react-icons/ai"
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+} from "@chakra-ui/react";
 interface Props {
   fetchAgain: boolean;
   setFetchAgain: any;
 }
 
+const ENDPOINT = "http://localhost:5000";
+var socket, selectedChatCompare;
 const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
   const { user, selectedChat, setSelectedChat }: any = ChatState();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="flex flex-col border-r-2 border-gray-200 h-screen ">
+    <Box
+      display={{ base: selectedChat ? "flex" : "none", md: "flex" }}
+      alignItems="center"
+      flexDir="column"
+      p={1}
+      bg="white"
+      w={{ base: "100%", md: "68%" }}
+    >
       {selectedChat ? (
-        <>
+        <div className="w-full">
+          <IconButton
+              aria-label=""
+              display={{ base: "flex", md: "none" }}
+              icon={<AiOutlineArrowLeft/>} 
+              zIndex="9999"
+              onClick={() => setSelectedChat("")}
+            />
           <div
-            className="flex flex-1 items-center justify-between pt-2 pr-4 pb-2 fixed top-13 border-b-2 border-gray-200"
-            style={{ width: "60%" }}
+            className="flex items-center justify-between pt-2 pr-4 pb-2 border-b-2 border-gray-200"
           >
             {!selectedChat.isGroupChat ? (
               <>
@@ -38,7 +72,15 @@ const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
                   </Text>
                 </div>
                 <div>
-                  <BsThreeDots className="h-6 w-6 " />
+                  <Menu>
+                    <MenuButton>
+                      <BsThreeDots className="h-6 w-6 cursor-pointer" />
+                    </MenuButton>
+                    <MenuList zIndex="9999">
+                      <MenuItem>Download</MenuItem>
+                      <MenuItem>Download</MenuItem>
+                    </MenuList>
+                  </Menu>
                 </div>
               </>
             ) : (
@@ -69,24 +111,21 @@ const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
               </>
             )}
           </div>
-
-            <ChatDescription
-              loading={loading}
-              setLoading={setLoading}
-              fetchAgain={fetchAgain}
-              setFetchAgian={setFetchAgain}
-            />
-      
-        </>
+          <ChatDescription
+            loading={loading}
+            setLoading={setLoading}
+            fetchAgain={fetchAgain}
+            setFetchAgian={setFetchAgain}
+          />
+        </div>
       ) : (
         <div
-          className="flex flex-1 items-center justify-between pt-2 pr-4 pb-2 fixed top-13 border-b-2 border-gray-200"
-          style={{ width: "100%" }}
+          className="flex items-center justify-center border-gray-200"
         >
           <h1>Please Select a chat to comminucate</h1>
         </div>
       )}
-    </div>
+    </Box>
   );
 };
 

@@ -59,9 +59,12 @@ const Sidebar = ({fetchAgain}:Props) => {
   }, [fetchAgain]);
 
   return (
-    <div
-      className="flex flex-col  bg-gray-200 fixed left-0"
-      style={{ width: "20%" }}
+    <Box
+    display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+    flexDir="column"
+    bg="white"
+    w={{ base: "100%", md: "31%" }}
+    borderRight="1px solid lightgray"
     >
       <div className="flex flex-col space-x-2 px-3 py-3 content-center">
         <Text className="font-medium text-base">Favourites</Text>
@@ -132,7 +135,7 @@ const Sidebar = ({fetchAgain}:Props) => {
           <ChatLoading />
         )}
       </div>
-    </div>
+    </Box>
   );
 };
 

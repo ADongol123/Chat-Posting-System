@@ -14,14 +14,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
-  const {
-    setSelectedChat,
-    user,
-    notification,
-    setNotification,
-    chats,
-    setChats,
-  }: any = ChatState();
+  const { user }: any = ChatState();
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!email || !password) {
@@ -52,8 +45,8 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
-      setLoading(true);
       localStorage.setItem("userInfo", JSON.stringify(data));
+      window.location.reload();
       navigate("/chat");
     } catch (err) {
       console.log(err);
@@ -62,7 +55,7 @@ const Login = () => {
 
   return (
     <>
-      { !user && !user ? (
+      {!user && !user ? (
         <div className="flex flex-col justify-center items-center h-screen bg-[#0e8afd]">
           <div className="flex flex-col items-center bg-white p-32 rounded-md gap-5">
             <Text className="font-bold text-3xl">Login</Text>

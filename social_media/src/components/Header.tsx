@@ -50,6 +50,7 @@ const Header = () => {
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
+    window.location.reload();
     navigate("/");
   };
 

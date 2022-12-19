@@ -11,7 +11,7 @@ const PersonalInfo = () => {
   const userName = useSelector(selectUserName)
   const userLog = useSelector(selectUserloggedIn)
   return (
-    <div className='flex flex-col space-y-8 fixed right-0' style={{ width: "20%" }}>
+    <div className='flex flex-col space-y-8 fixed right-0 border-l-2 border-gray-200' style={{ width: "20%" }}>
       <div className='flex flex-col items-center space-y-8'>
         <Avatar marginTop="5" size='2xl' src={userPhoto} />
         <div className='flex space-x-8'>
