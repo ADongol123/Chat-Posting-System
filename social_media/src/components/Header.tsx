@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import {
   Avatar,
-  IconButton,
   Input,
-  InputGroup,
-  InputLeftElement,
   Stack,
   Text,
   AvatarBadge,
@@ -25,19 +22,21 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { AiOutlineSearch, AiOutlineBell } from "react-icons/ai";
-import { auth } from "../firebase";
-import { useSelector } from "react-redux";
-import {
-  selectUserPhoto,
-  selectUserName,
-  selectUserloggedIn,
-  selectUserId,
-} from "./../features/User/userSlice";
+// import { auth } from "../firebase";
+// import { useSelector } from "react-redux";
+// import {
+//   selectUserPhoto,
+//   selectUserName,
+//   selectUserloggedIn,
+//   selectUserId,
+// } from "./../features/User/userSlice";
+import { RiArrowDownSLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ChatLoading from "./Chat/ChatLoading";
 import UserList from "./Chat/UserList";
 import { ChatState } from "../Context/ChatProvider";
+import { getSender } from "../config/ChatLogics";
 
 const Header = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -62,8 +61,8 @@ const Header = () => {
     chats,
     setChats,
   }: any = ChatState();
-
-  const handleSearch = async (e:any) => {
+  console.log(notification, "header");
+  const handleSearch = async (e: any) => {
     e.preventDefault();
     if (!search) {
       toast({
@@ -107,11 +106,12 @@ const Header = () => {
         },
       };
       const { data } = await axios.post(`/api/chat`, { userId }, config);
-      if(!chats.find((value :any) => value._id === data._id)) setChats([data,...chats])
+      if (!chats.find((value: any) => value._id === data._id))
+        setChats([data, ...chats]);
 
-      setSelectedChat(data)
-      setLoadingChat(false)
-      onClose()
+      setSelectedChat(data);
+      setLoadingChat(false);
+      onClose();
     } catch (error) {
       toast({
         title: "Error Fetchin th Chat",
@@ -125,9 +125,12 @@ const Header = () => {
   return (
     <Stack
       direction="row"
+      position="sticky"
+      top="0"
+      backgroundColor="white"
+      zIndex="9999"
       p="2"
       borderBottom="1px solid lightgray"
-      className="sticky top-0 bg-white z-1000"
     >
       <Stack
         direction="row"
@@ -141,13 +144,34 @@ const Header = () => {
         <AiOutlineSearch color="gray.300" />
         <Text>Search Here ...</Text>
       </Stack>
+      <Menu>
+        <MenuButton p={1}>
+          <AiOutlineBell fontSize="2xl" />
+        </MenuButton>
+        <MenuList>
+          {!notification.length && "No New Messages"}
+          {notification?.map((notif) => (
+            <MenuItem
+              key={notif?.id}
+              onClick={() => {
+                setSelectedChat(notif.chat);
+                setNotification(notification.filter((n) => n !== notif));
+              }}
+            >
+              {notif.chat.isGroupChat
+                ? `New Message in ${notif.chat.chatname}`
+                : `New Message from ${getSender(user, notif.chat.users)}`}
+            </MenuItem>
+          ))}
+        </MenuList>
+      </Menu>
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>Search For Users</DrawerHeader>
           <DrawerBody>
-            <form  onSubmit={handleSearch}>
+            <form onSubmit={handleSearch}>
               <Stack direction="row" spacing="0">
                 <Input
                   placeholder="Search by name or email"
@@ -179,38 +203,29 @@ const Header = () => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-      <Stack>
-        <IconButton
-          colorScheme="blue"
-          aria-label="Call Segun"
-          variant="outlined"
-          size="lg"
-          icon={<AiOutlineBell />}
-        />
-        <Stack
-          position="absolute"
-          justifyContent="center"
-          bg="red"
-          borderRadius="10px"
-          h="15px"
-          w="15px"
+
+      <Menu>
+        <MenuButton
+          px={4}
+          py={2}
+          transition="all 0.2s"
+          _hover={{ bg: "gray.200" }}
+          _expanded={{ bg: "none" }}
+          _focus={{ boxShadow: "outline" }}
         >
-          <Text textAlign="center" fontSize="xx-small" color="white">
-            3
-          </Text>
-        </Stack>
-      </Stack>
-      <Stack
-        direction="row"
-        alignItems="center"
-        className="cursor-pointer"
-        onClick={logoutHandler}
-      >
-        <Avatar size="sm">
-          <AvatarBadge boxSize="1.25em" bg="green.500" />
-        </Avatar>
-        <Text>{user.name}</Text>
-      </Stack>
+          <Stack direction="row" alignItems="center" className="cursor-pointer">
+            <Avatar size="sm">
+              <AvatarBadge boxSize="1.25em" bg="green.500" />
+            </Avatar>
+            <Text>{user.name}</Text>
+            <RiArrowDownSLine />
+          </Stack>
+        </MenuButton>
+        <MenuList>
+          <MenuItem>Profile</MenuItem>
+          <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+        </MenuList>
+      </Menu>
     </Stack>
   );
 };

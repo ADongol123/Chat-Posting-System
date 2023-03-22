@@ -15,7 +15,7 @@ import ChatDescription from "./Chat/ChatDescription";
 import { ChatState } from "../Context/ChatProvider";
 import { getSender } from "../config/ChatLogics";
 import UpdateGroupChatModel from "./Chat/UpdateGroupChatModel";
-import {AiOutlineArrowLeft} from "react-icons/ai"
+import { AiOutlineArrowLeft } from "react-icons/ai";
 import {
   Menu,
   MenuButton,
@@ -29,11 +29,18 @@ import {
 interface Props {
   fetchAgain: boolean;
   setFetchAgain: any;
+  messages: any;
+  setMessages: any;
 }
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
-const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
+const ChatRoom = ({
+  fetchAgain,
+  setFetchAgain,
+  setMessages,
+  messages,
+}: Props) => {
   const { user, selectedChat, setSelectedChat }: any = ChatState();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
@@ -50,15 +57,13 @@ const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
       {selectedChat ? (
         <div className="w-full">
           <IconButton
-              aria-label=""
-              display={{ base: "flex", md: "none" }}
-              icon={<AiOutlineArrowLeft/>} 
-              zIndex="9999"
-              onClick={() => setSelectedChat("")}
-            />
-          <div
-            className="flex items-center justify-between pt-2 pr-4 pb-2 border-b-2 border-gray-200"
-          >
+            aria-label=""
+            display={{ base: "flex", md: "none" }}
+            icon={<AiOutlineArrowLeft />}
+            zIndex="9999"
+            onClick={() => setSelectedChat("")}
+          />
+          <div className="flex items-center justify-between pt-2 pr-4 pb-2 border-b-2 border-gray-200">
             {!selectedChat.isGroupChat ? (
               <>
                 <div className="flex space-x-2 items-center p-2">
@@ -116,12 +121,12 @@ const ChatRoom = ({ fetchAgain, setFetchAgain }: Props) => {
             setLoading={setLoading}
             fetchAgain={fetchAgain}
             setFetchAgian={setFetchAgain}
+            messages={messages}
+            setMessages={setMessages}
           />
         </div>
       ) : (
-        <div
-          className="flex items-center justify-center border-gray-200"
-        >
+        <div className="flex items-center justify-center border-gray-200">
           <h1>Please Select a chat to comminucate</h1>
         </div>
       )}

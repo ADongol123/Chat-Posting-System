@@ -90,7 +90,7 @@ const Sidebar = ({fetchAgain}:Props) => {
         </div>
         <Modal isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
         {chats ? (
-          <div className="flex flex-col no-scrollbar overflow-y-auto h-[70%] p-3 gap-2">
+          <div className="flex flex-col no-scrollbar overflow-y-auto h-[78%] pb-20 pl-3 pr-3 pt-3 gap-2">
             {chats.map((chat: any) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
@@ -104,6 +104,7 @@ const Sidebar = ({fetchAgain}:Props) => {
                 py={2}
                 borderRadius="lg"
                 key={chat._id}
+                _hover={{bg:"#D3D3D3"}}
               >
                 <div className="flex items-center space-x-4">
                   <Avatar

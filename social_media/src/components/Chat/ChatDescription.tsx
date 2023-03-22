@@ -14,6 +14,8 @@ interface Props {
   setFetchAgian: any;
   loading: boolean;
   setLoading: any;
+  messages: any;
+  setMessages: any;
 }
 
 const ChatDescription = ({
@@ -21,9 +23,19 @@ const ChatDescription = ({
   setFetchAgian,
   loading,
   setLoading,
+  setMessages,
+  messages,
 }: Props) => {
-  const { user, selectedChat, setSelectedChat }: any = ChatState();
-  const [messages, setMessages]: any = useState([]);
+  const {
+    user,
+    selectedChat,
+    setSelectedChat,
+    notification,
+    setNotification,
+  }: any = ChatState();
+  // const [messages, setMessages]: any = useState([]);
+  console.log(messages, "messages");
+  const [updatedDate, setUpdatedDate] = useState<any>();
   const [newMessage, setNewMessage] = useState<any>();
   const toast = useToast();
   const [socketConnected, setSocketConnected] = useState(false);
@@ -121,24 +133,15 @@ const ChatDescription = ({
       }
     }, timerLength);
   };
+
   useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
-  useEffect(() => {
-    socket.on("message received", (newMessageReceived) => {
-      if (
-        !selectedChatCompare ||
-        selectedChatCompare._id !== newMessageReceived.chat._id
-      ) {
-      } else {
-        setMessages([...messages, newMessageReceived]);
-      }
-    });
-  });
+  console.log(notification, "notification");
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-screen">
       <div className="no-scrollbar overflow-y-scroll h-4/5 pl-2 pt-2 pr-2 pb-5">
         {messages?.map((details: any) => (
           <>
@@ -149,7 +152,7 @@ const ChatDescription = ({
                   <div className="flex items-center justify-between space-x-20">
                     <div className="flex items-center space-x-5">
                       <Text className="font-medium">{details.sender.name}</Text>
-                      <Text className="text-xs">20mins ago</Text>
+                      <Text className="text-xs">{details.chat.updatedAt}</Text>
                     </div>
                     <BsThreeDots />
                   </div>
